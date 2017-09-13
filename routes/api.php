@@ -17,7 +17,7 @@ Route::get('test', function () {
     return 'test闭包写法';
 });
 
-Route::get('test1','TestController.php@test');
+Route::get('test1','TestController@test');
 
 Route::post('test', function () {
     return 'post写法';
@@ -78,3 +78,34 @@ Route::get('genmulu', function () {
 Route::get('go/genmulu', function () {
     return redirect()->route('genmulu');
 });
+
+//命名空间
+Route::group(['namespace'=>'\App\Http\Contorllers\Date'], function () {
+    Route::get('date','DateController@date' );
+    Route::get('show','DateController@show');
+});
+
+//路由前缀
+Route::group(['prefix'=>'user'],function (){
+   Route::post('login',function (){
+       return'login';
+   });
+   Route::get('register',function (){
+       return'register';
+   });
+    Route::group(['prefix'=>'child'],function (){
+        Route::post('login',function (){
+            return'child login';
+        });
+        Route::get('register',function (){
+            return'child register';
+        });
+    });
+});
+
+//路由模型绑定
+Route::group([''],function (){
+
+});
+
+
