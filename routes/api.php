@@ -111,6 +111,8 @@ Route::group(['prefix' => 'test'], function () {
         return json_encode($request);
     });
 });
+//获取请求路径
+Route::get('path','TestController@test');
 
 Route::group(['prefix'=>'test2'],function (){
     //request常用方法
@@ -163,10 +165,11 @@ Route::group(['prefix'=>'test2'],function (){
     });
 
     //响应
-//    todo Route::get('response',function (){
-//       return response('返回内容',201,['name'=>'tom']);
-//        $aaa new stdClass();
-//        $aaa->name ='tom';
-//        return response()->json(['name'=>'tom','user'=>$aaa],201);
-//    });
+ Route::get('response',function (){
+//      return response('返回内容',201,['name'=>'tom']);
+//     return response()->json(['name'=>'tom'],201,[]);
+       $aaa = new stdClass();
+       $aaa ->name ='tom';
+        return response()->json(['name'=>'tom','user'=>$aaa],201);
+   });
 });
