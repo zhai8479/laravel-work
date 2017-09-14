@@ -103,9 +103,70 @@ Route::group(['prefix'=>'user'],function (){
     });
 });
 
-//路由模型绑定
-Route::group([''],function (){
+//todo 数据库连接有点问题
 
+//请求与相应
+Route::group(['prefix' => 'test'], function () {
+    Route::get('request', function (\Illuminate\Http\Request $request) {
+        return json_encode($request);
+    });
 });
 
+Route::group(['prefix'=>'test2'],function (){
+    //request常用方法
+   Route::get('path',function (Request $request){
+       return $request->path();
+   });
+    Route::get('url',function (Request $request){
+        return $request->url();
+    });
+    Route::get('fullurl',function (Request $request){
+        return $request->fullurl();
+    });
+    Route::get('method',function (Request $request){
+        return $request->method();
+    });
+    Route::any('isMethod',function (Request $request){
+        return $request->isMethod('GET')?'is get':'not is get';
+    });
+    //request获取请求数据
+    Route::any('all',function (Request $request){
+        return $request->all();
+    });
+    Route::any('input',function (Request $request){
+        return $request->input('name','默认值');
+    });
+    Route::any('only',function (Request $request){
+        return $request->only(['name','age']);//取出指定值
+    });
+    //request获取请求数据
+    Route::any('except',function (Request $request){
+        return $request->except('name');//不取出指定值
+    });
+    Route::any('has',function (Request $request){
+        return $request->has('name')?'has name':'not has name';
+    });
 
+    //request上传文件
+    Route::post('hasFile',function (Request $request){
+        $hasFile =$request->hasFile('file');
+        return $hasFile?'has file':'not has file';
+    });
+    Route::post('file',function (Request $request){
+        $file = $request->file('file');
+        return $file->getFilename().'.'.$file->extension();
+    });
+    Route::post('store',function (Request $request){
+        $file = $request->file('file');
+         $path = $file->store('avatar');
+         return $path;
+    });
+
+    //响应
+//    todo Route::get('response',function (){
+//       return response('返回内容',201,['name'=>'tom']);
+//        $aaa new stdClass();
+//        $aaa->name ='tom';
+//        return response()->json(['name'=>'tom','user'=>$aaa],201);
+//    });
+});
