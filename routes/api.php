@@ -103,7 +103,7 @@ Route::group(['prefix'=>'user'],function (){
     });
 });
 
-//todo 数据库连接有点问题
+
 
 //请求与相应
 Route::group(['prefix' => 'test'], function () {
@@ -170,6 +170,84 @@ Route::group(['prefix'=>'test2'],function (){
 //     return response()->json(['name'=>'tom'],201,[]);
        $aaa = new stdClass();
        $aaa ->name ='tom';
-        return response()->json(['name'=>'tom','user'=>$aaa],201);
+//        return response()->json(['name'=>'tom','user'=>$aaa],201);
+     return response()->redirectTo('http://www.baidu.com');
    });
+});
+
+//数据库
+Route::group(['prefix' => 'db-test'],function (){
+    Route::group(['prefix' => 'nativity'],function (){
+        Route::post('select',function (){
+            $table =DB::select('show tables');
+            //DB是一个facade（门面），用于便捷的访问数据库操作对象-类似于指定入口
+            //log 日志记录，使用相关函数可以查看框架操作日志
+            //重点：select可以执行查询语句（也可以执行其他操作），返回结果对象，且以集合的方式返回
+            Log::debug('tables',[$table]);
+            return $table;
+        });
+        Route::post('insert',function (){
+            //重点：insert可以执行插入语句，返回操作是否成功
+            $created_at =date('Y-m-d H:i:s');
+            $email = time().'@qq.com';
+            $charu = DB::insert("insert into `users` (`name`,`email`,`password`,`created_at`)
+                                            value ('zhai','$email','123456','$created_at')" );
+            return $charu?'插入成功':'插入失败';
+        });
+        Route::post('update',function (){
+            //重点：update返回操作受影响行数（被修改了数据的行数，一个数字）
+            $xiugai1 = DB::update("update `users` set `password` = ?",['87654321']);
+            $xiugai2 = DB::update("update `users` set `name` = :name",['name' => 'new-name']);
+            return[
+                'xiugai1'=>$xiugai1,
+                'xiugai2'=>$xiugai2
+            ];
+        });
+        Route::post('delete', function () {
+            // delete 操作返回被删除的行数（数字）
+            $xiugai = DB::delete("delete from `users` where name = :name", ['name' => 'new-name']);
+            return $xiugai;
+        });
+        Route::post('statement', function () {
+            // 用于执行没有返回值的语句
+            DB::statement("drop table `password_resets`");
+        });
+        // 事务操作
+        Route::post('auto-transaction', function () {
+            // 自动事务
+            // 当sql语句操作成功时，自动提交
+            // 失败时，自动回滚（无任何返回值）
+            DB::transaction(function () {
+                DB::update("update `users` set `name` = :name", ['name' => 'new-name']);
+                throw new Exception('手动抛出一个异常');
+                DB::update("update `users` set `name` = :name", ['name' => 'name']);
+            });
+        });
+        Route::post('transaction', function () {
+            // 手动操作事务
+            // 包含 beginTransaction, commit rollBack
+            //可自定义添加返回数据以达到检测事务流程运行状态的目的
+            DB::beginTransaction();
+            try {
+                DB::update("update `users` set `name` = :name", ['name' => 'new-name']);
+//                throw new Exception('手动抛出一个异常');
+                DB::commit();
+                return '事务提交了，数据被提交到数据库中了';
+            } catch (Exception $exception) {
+                DB::rollBack();
+                return '事务回滚了，数据操作被取消';
+            }
+        });
+        Route::post('bind', function () {
+            // 参数绑定
+            // 命名绑定
+            $xiugai11 = DB::update("update `users` set `name` = :name, `password` = :password", ['name' => 'new-name', 'password' => '111111']);
+            // 位置绑定
+            $xiugai22 = DB::update("update `users` set `name` = ?, `password` = ?", ['old-name', '222222']);
+            return [
+                '1' => $xiugai11,
+                '2' => $xiugai22
+            ];
+        });
+    });
 });
