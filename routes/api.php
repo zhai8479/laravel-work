@@ -250,4 +250,31 @@ Route::group(['prefix' => 'db-test'],function (){
             ];
         });
     });
+    Route::group(['prefix' =>'structure'],function (){
+        Route::post('get',function (){
+            //获取所有符合条件的值
+            return DB::table('users')->get();
+        });
+        Route::post('first',function (){
+            //获取符合条件的第一条数据，返回一个对象
+            $aaa =DB::table('users')->first();
+            return response()->json($aaa);
+        });
+        Route::post('value',function (){
+            //只返回单个值
+            return DB::table('users')->value('name');
+        });
+        Route::post('pluck',function (){
+            //查询并返回符合条件的一列数据
+            return DB::table('users')->pluck('email');
+        });
+        Route::post('polymeric',function (){
+            //count (统计符合条件数据条数)
+            //max(统计符合条件数据里)
+            //min
+            //sum
+            return DB::table('users')->count();
+        });
+
+    });
 });
