@@ -270,10 +270,13 @@ Route::group(['prefix' => 'db-test'],function (){
         });
         Route::post('polymeric',function (){
             //count (统计符合条件数据条数)
-            //max(统计符合条件数据里)
+            //max(统计符合条件数据里最大值)
             //min
             //sum
-            return DB::table('users')->count();
+          //  return DB::table('users')->count();
+            //return DB::table('users')->max('id');
+            //return DB::table('users')->min('id');
+            return DB::table('users')->sum('id');
         });
 
     });
