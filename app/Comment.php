@@ -18,4 +18,7 @@ class Comment extends Model
     public $timestamps = true;
     // 设置填充(插入)的黑白名单, 只对模型有效
     protected $guarded = ['id', 'created_at', 'updated_at'];
+
+
+
 }

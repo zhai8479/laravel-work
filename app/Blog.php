@@ -1,14 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ZT
- * Date: 2017/9/18/0019
- * Time: 11:02
- */
 
 namespace App;
+
 use Illuminate\Database\Eloquent\Model;
-// orm:  object relation map  对象关系映射
+
 class Blog extends Model
 {
     // 设置表名

@@ -353,14 +353,10 @@ Route::group(['prefix' => 'db-test'],function (){
         });
     });
 });
-//Route::group(['prefix' => 'blog'], function () {
-//    // 显示博客列表
-//    Route::get('show', 'BlogController@show');
-//    // 获取博客详情
-//    Route::get('index/{id}', 'BlogController@index');
-//    // 添加一条博客
-//    Route::post('store', 'BlogController@store');
-//});
+
+
+
+//博客表相关操作
 Route::group(['prefix' => 'test-model'], function () {
     // 模型插入数据操作
     Route::get('create', function (Request $request) {
@@ -393,7 +389,7 @@ Route::group(['prefix' => 'test-model'], function () {
     Route::get('whereShow/{user_id}', function ($user_id) {
         $list = \App\Blog::where('user_id', $user_id)->get();
         foreach ($list as &$item) {
-            $item->area = '武汉';
+            $item->area = 'hello word';
         }
         return response()->json($list);
     });
@@ -412,12 +408,79 @@ Route::group(['prefix' => 'test-model'], function () {
         // 批量修改
         \App\Blog::where('id', 7)->update(['title' => '新的标题']);
     });
-    // 删除操作
+    // 删除操作（硬删除）
     Route::delete('delete/{id}', function ($id) {
         // 第一种删除方式
 //        return \App\Blog::destroy($id);
         // 第二种删除方式
         $blog = \App\Blog::find($id);
        return response()->json($blog->delete());
+    });
+});
+
+//评论表相关操作
+Route::group(['prefix' => 'test-model2'], function () {
+    // 模型插入数据操作
+    Route::get('create', function (Request $request) {
+        // 如何使用模型来插入一条数据
+        // 使用create方法来插入数据，返回一个模型对象
+        // 第一种创建
+        $input = [
+            'user_id' => 11,
+            'blog_id' => '博客id',
+            'content' => '评价内容',
+        ];
+//
+//        $comment = \App\Comment::create($input);
+//
+//        return response()->json($comment);
+        // 第二种插入
+        $comment = new \App\Comment($input);
+        $comment ->save();
+    });
+    // 根据主键查询
+    Route::get('index/{id}', function ($id) {
+        return response()->json(\App\Comment::find($id));
+    });
+    // 列表查询
+    Route::get('show', function () {
+        return response()->json(\App\Comment::get());
+    });
+    //实际列表查询应该是根据博客id来显示评论
+    Route::get('whereList/{blog_id}', function ($blog_id) {
+        $list = \App\Comment::where('blog_id', $blog_id)->get();
+        return response()->json($list);
+    });
+
+    // 条件查询, 查询构造器和以前的DB对象一样用
+    Route::get('whereShow/{user_id}', function ($user_id) {
+        $list = \App\Comment::where('user_id', $user_id)->get();
+        foreach ($list as &$item) {
+            $item->area = 'hello word';
+        }
+        return response()->json($list);
+    });
+    // 修改数据
+    Route::post('update/{id}', function (Request $request, $id) {
+        if (! $request->has('content')) return response('content未设置', 400);
+        $content = $request->input('content');
+//        // 获取模型
+//        $comment = \App\Comment::find($id);
+//        // 修改模型值
+//        $comment->content = $content;
+//        // 保存结果
+//        $comment->save();
+//
+//        return response()->json(\App\Comment::find($id));
+        // 批量修改
+        \App\Comment::where('id', 7)->update(['content' => '新的评论']);
+    });
+    // 删除操作（硬删除）
+    Route::delete('delete/{id}', function ($id) {
+        // 第一种删除方式
+//        return \App\Blog::destroy($id);
+        // 第二种删除方式
+        $comment = \App\Comment::find($id);
+        return response()->json($comment->delete());
     });
 });

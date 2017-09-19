@@ -23,7 +23,6 @@ class CreateCommentTable extends Migration
             $table->increments('id');
             $table->integer('blog_id', false,true)->length(20)->comment('博客id');
             $table->string('content',255)->comment('评价内容');
-            $table->integer('delete_user_id', false,true)->length(11)->comment('删除者id');
             $table->integer('user_id', false, true)->length(11)->comment('用户id');
             $table->boolean('is_delete')->comment('是否删除')->default(false);
             $table->timestamps();
